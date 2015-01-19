@@ -175,8 +175,8 @@ unsigned get_top_lines(FILE *client, msg_t *msg, unsigned linecount)
 	/* Read as many lines as available */
 
 	while (lines < linecount &&
-		   lines < msg->top_block->linecount &&
-		   ptr < limit)
+	       lines < msg->top_block->linecount &&
+	       ptr < limit)
 	{
 		for (; *ptr != '\n' && ptr < limit; ptr++);
 		lines++;
@@ -352,7 +352,7 @@ int pop3_doauth(FILE *client, const char *user, const char *password)
 		c = *ptr;
 
 		if ((c > '0' && c <= '9') || (c >= 'a' && c <= 'z') || // bug, should be c >= '0'...
-			(c >= 'A' && c <= 'Z')) {
+		    (c >= 'A' && c <= 'Z')) {
 			continue;
 		}
 
@@ -373,10 +373,10 @@ int pop3_doauth(FILE *client, const char *user, const char *password)
 	}
 
 	address.sun_family = AF_UNIX;
-    strcpy(address.sun_path, AUTHENTICATION_SERVER);
+	strcpy(address.sun_path, AUTHENTICATION_SERVER);
 
 	if (((sockfd = socket(PF_UNIX, SOCK_STREAM, 0)) < 0) ||
-	   (connect(sockfd, (struct sockaddr *)&address, sizeof(address)) == -1)) {
+	    (connect(sockfd, (struct sockaddr *)&address, sizeof(address)) == -1)) {
 
 		if (sockfd) {
 			close(sockfd);
@@ -393,7 +393,7 @@ int pop3_doauth(FILE *client, const char *user, const char *password)
 
 	ffprintf(f, "check_auth:%s:%s:%s\n", user, g_user.secret, password);
 
-    if (read(sockfd, &c, 1) != 1) {
+	if (read(sockfd, &c, 1) != 1) {
 		ffprintf(client, "-ERR no response from the authentication service\r\n");
 	} else {
 		if (c) {
@@ -466,8 +466,8 @@ int pop3_apop(FILE *client, char *args)
 		}
 
 		ffprintf(client, "+OK maildrop has %u message%s (%zu octets)\r\n",
-				 g_user.msg_count, g_user.msg_count > 1 ? "s" : "",
-				 get_total_size());
+		         g_user.msg_count, g_user.msg_count > 1 ? "s" : "",
+		         get_total_size());
 
 		g_user.username = xmalloc(strlen(user) + 1);
 		strcpy(g_user.username, user);
@@ -542,7 +542,7 @@ int pop3_list(FILE *client, char *args)
 		total_size = get_total_size();
 
 		ffprintf(client, "+OK %u messages (%zu octets)\r\n",
-				 g_user.msg_count, total_size);
+		         g_user.msg_count, total_size);
 
 		msg = g_user.messages;
 
@@ -619,7 +619,7 @@ int pop3_quit(FILE *client)
 	/* Release lock */
 
 	path = xmalloc(sizeof(TMPDIR) + strlen(g_user.username) +
-				   sizeof(LOCK_FILE) + 3);
+	               sizeof(LOCK_FILE) + 3);
 	sprintf(path, "%s/%s/%s", TMPDIR, g_user.username, LOCK_FILE);
 	unlink(path);
 
@@ -630,7 +630,7 @@ int pop3_quit(FILE *client)
 	if (ret == 0) {
 		if (g_user.msg_count) {
 			ffprintf(client, "+OK POP3 server signing off (%u messages left)\r\n",
-					 g_user.msg_count);
+			         g_user.msg_count);
 		} else {
 			ffprintf(client, "+OK POP3 server signing off (maildrop empty)\r\n");
 		}
@@ -704,7 +704,7 @@ int pop3_rset(FILE *client)
 	g_user.msg_count = count;
 
 	ffprintf(client, "+OK maildrop has %u messages (%zu octets)\r\n",
-			 count, total_size);
+	         count, total_size);
 
 	return 0;
 }
@@ -818,7 +818,7 @@ int pop3_uidl(FILE *client, char *args)
 	}
 
 	ffprintf(client, "-ERR no such message, only %u messages in maildrop\r\n",
-			 g_user.msg_count);
+	         g_user.msg_count);
 
 	return 0;
 }
